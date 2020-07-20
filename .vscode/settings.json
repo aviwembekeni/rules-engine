@@ -1,0 +1,39 @@
+{
+  "workbench.colorCustomizations": {
+    "titleBar.activeForeground": "#000000",
+    "titleBar.inactiveForeground": "#000000CC",
+    "titleBar.activeBackground": "#243c63",
+    "titleBar.inactiveBackground": "#243c63CC"
+  },
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/.aws": true,
+    "**/build": true,
+    ".serverless": true
+  },
+  "files.eol": "\n",
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
+  "editor.trimAutoWhitespace": true,
+  "editor.formatOnPaste": true,
+  "eslint.packageManager": "yarn",
+  "editor.formatOnSave": true,
+  "[javascript]": {
+    "editor.formatOnSave": false
+  },
+  "[typescript]": {
+    "editor.formatOnSave": false
+  },
+  "eslint.validate": [
+    "javascript",
+    {
+      "language": "typescript",
+      "autoFix": true
+    }
+  ],
+  "eslint.autoFixOnSave": true,
+  "eslint.alwaysShowStatus": true,
+  "breadcrumbs.enabled": true,
+  "editor.renderControlCharacters": true
+}

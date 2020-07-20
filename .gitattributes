@@ -1,0 +1,23 @@
+# Autodetect Text Files:
+* text=auto eol=lf
+
+# Definitely Text Files:
+.gitattributes text eol=lf
+.gitignore text eol=lf
+*.md text eol=lf
+*.tf text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+*.py text eol=lf
+*.css text eol=lf
+*.tfvars text eol=lf
+*.yml text eol=lf
+Dockerfile text eol=lf
+Makefile text eol=lf
+.env text eol=lf
+.eslintrc text eol=lf
+.prettierrc text eol=lf
+
+# Definitely Binary Files:
+#   Add here once we have binary files in Repo e.g. PNG
+*.png binary

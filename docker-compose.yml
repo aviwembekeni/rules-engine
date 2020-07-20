@@ -1,0 +1,29 @@
+version: '3.5'
+services:
+  notifications-service:
+    container_name: ${PROJECT}
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        PROJECT: ${PROJECT}
+    ports:
+      - '4005:4005'
+    volumes:
+      - './.aws:/root/.aws'
+      - '.:/${PROJECT}'
+      - '/${PROJECT}/node_modules'
+    environment:
+      - NODE_ENV=development
+      - AWS_PROFILE=inves-global
+      - PROJECT=${PROJECT}
+    entrypoint: top
+    networks:
+      - inves-global
+    logging:
+      driver: none
+
+networks:
+  inves-global:
+    name: inves-global
+    external: true

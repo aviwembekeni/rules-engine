@@ -1,0 +1,17 @@
+generates:
+  ./src/shared/types/notification-service-types.ts:
+    schema: http://localhost:4005/
+    hooks:
+      afterOneFileWrite:
+        - prettier --write
+    config:
+      # defaultMapper: any
+      skipTypename: true
+      scalars:
+        String: string
+        Float: number
+        Int: number
+      declarationKind: interface
+    plugins:
+      - typescript
+      - typescript-resolvers
