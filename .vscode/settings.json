@@ -35,5 +35,8 @@
   "eslint.autoFixOnSave": true,
   "eslint.alwaysShowStatus": true,
   "breadcrumbs.enabled": true,
-  "editor.renderControlCharacters": true
+  "editor.renderControlCharacters": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  }
 }
