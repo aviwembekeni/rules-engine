@@ -16,7 +16,7 @@ class Rules {
   /**
    * name
    */
-  public async accountSurpassedThreshold(account: Account, threshold: number): Promise<string> {
+  public async accountSurpassedThresholdLib(account: Account, threshold: number): Promise<string> {
     const engine = new Engine();
 
     // define a rule for detecting the account has exceeded threshold.
@@ -50,7 +50,14 @@ class Rules {
     return messages[0] || 'Threshold not reached';
   }
 
-  public async assetSurpassedThreshold(asset: Asset, threshold: number): Promise<string> {
+  public async accountSurpassedThreshold(account: Account, threshold: number): Promise<string> {
+    if (account.value > threshold) {
+      return 'Threshold reached!';
+    }
+    return 'Threshold not reached';
+  }
+
+  public async assetSurpassedThresholdLib(asset: Asset, threshold: number): Promise<string> {
     const engine = new Engine();
 
     // define a rule for detecting the account has exceeded threshold.
@@ -84,7 +91,15 @@ class Rules {
     return messages[0] || 'Threshold not reached';
   }
 
-  public async compareAccounts(account1: Account, account2: Account): Promise<string> {
+  public async assetSurpassedThreshold(asset: Asset, threshold: number): Promise<string> {
+    if (asset.price > threshold) {
+      return 'Threshold reached!';
+    }
+
+    return 'Threshold not reached';
+  }
+
+  public async compareAccountsLib(account1: Account, account2: Account): Promise<string> {
     const engine = new Engine();
 
     engine.addRule({
@@ -120,6 +135,13 @@ class Rules {
       return event?.params?.message;
     });
     return messages[0] || `account ${account1.name} is less than ${account2.name}`;
+  }
+
+  public async compareAccounts(account1: Account, account2: Account): Promise<string> {
+    if(account1.value > account2.value){
+      return `account ${account1.name} is greater than ${account2.name}`;
+    }
+    return `account ${account1.name} is less than ${account2.name}`;
   }
 }
 
