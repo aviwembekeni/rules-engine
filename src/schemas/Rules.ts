@@ -10,6 +10,11 @@ interface Asset {
   price: number;
 }
 
+interface NotificationResponse {
+  alertUser: boolean;
+  message: string;
+}
+
 const portfolios = [
   {
     id: 'f7dba960-c11a-11ea-883c-d912cc75c7e9',
@@ -127,7 +132,7 @@ class Rules {
   /**
    * name
    */
-  public async accountSurpassedThresholdLib(account: Account, threshold: number): Promise<string> {
+  public async accountSurpassedThresholdLib(account: Account, threshold: number): Promise<NotificationResponse> {
     const engine = new Engine();
 
     // define a rule for detecting the account has exceeded threshold.
@@ -158,17 +163,34 @@ class Rules {
     const messages = results.events.map(event => {
       return event?.params?.message;
     });
-    return messages[0] || 'Threshold not reached';
-  }
 
-  public async accountSurpassedThreshold(account: Account, threshold: number): Promise<string> {
-    if (account.value > threshold) {
-      return 'Threshold reached!';
+    if(messages[0]) {
+      return {
+        alertUser: true,
+        message: messages[0],
+      };
     }
-    return 'Threshold not reached';
+
+    return {
+      alertUser: false,
+      message: 'Threshold not reached',
+    };
   }
 
-  public async assetSurpassedThresholdLib(asset: Asset, threshold: number): Promise<string> {
+  public async accountSurpassedThreshold(account: Account, threshold: number): Promise<NotificationResponse> {
+    if (account.value > threshold) {
+      return {
+        alertUser: true,
+        message: 'Threshold reached!',
+      }
+    }
+    return {
+      alertUser: false,
+      message: 'Threshold not reached',
+    };
+  }
+
+  public async assetSurpassedThresholdLib(asset: Asset, threshold: number): Promise<NotificationResponse> {
     const engine = new Engine();
 
     // define a rule for detecting the account has exceeded threshold.
@@ -199,18 +221,34 @@ class Rules {
     const messages = results.events.map(event => {
       return event?.params?.message;
     });
-    return messages[0] || 'Threshold not reached';
-  }
-
-  public async assetSurpassedThreshold(asset: Asset, threshold: number): Promise<string> {
-    if (asset.price > threshold) {
-      return 'Threshold reached!';
+    if (messages[0]) {
+      return {
+        alertUser: true,
+        message: messages[0],
+      };
     }
 
-    return 'Threshold not reached';
+    return {
+      alertUser: false,
+      message: 'Threshold not reached',
+    };
   }
 
-  public async compareAccountsLib(account1: Account, account2: Account): Promise<string> {
+  public async assetSurpassedThreshold(asset: Asset, threshold: number): Promise<NotificationResponse> {
+    if (asset.price > threshold) {
+      return {
+        alertUser: true,
+        message: 'Threshold reached!',
+      }
+    }
+
+    return {
+        alertUser: true,
+        message: 'Threshold not reached!',
+      };
+  }
+
+  public async compareAccountsLib(account1: Account, account2: Account): Promise<NotificationResponse> {
     const engine = new Engine();
 
     engine.addRule({
@@ -245,7 +283,18 @@ class Rules {
     const messages = results.events.map(event => {
       return event?.params?.message;
     });
-    return messages[0] || `account ${account1.name} is less than ${account2.name}`;
+
+    if(messages[0]){
+      return {
+        alertUser: true,
+        message: messages[0],
+      };
+    }
+
+    return {
+      alertUser: false,
+      message: `account ${account1.name} is less than ${account2.name}`
+    }
   }
 
   public async compareAccounts(account1: Account, account2: Account): Promise<string> {
@@ -255,7 +304,7 @@ class Rules {
     return `account ${account1.name} is less than ${account2.name}`;
   }
 
-  public async accountSurpassedPortPerc(accountId: string, portfolioId: string, portfolioPercentage: number): Promise<string> {
+  public async accountSurpassedPortPerc(accountId: string, portfolioId: string, portfolioPercentage: number): Promise<NotificationResponse> {
     const portfolio = portfolios.find(p => p.id === portfolioId);
     const account = portfolio?.accounts.find(account => account.id === accountId);
     const portfolioTotal = portfolio?.accounts.reduce(
@@ -265,13 +314,19 @@ class Rules {
     const accountValue = (account?.quantity as number) * (account?.asset?.convertedPrice as number);
     const accountPercentage = (accountValue / portfolioTotal) * 100;
     if (accountPercentage > portfolioPercentage) {
-      return `account ${account?.name}'s percentage is greater than portfolio percentage [${portfolioPercentage}]`;
+      return {
+        alertUser: true,
+        message: `account ${account?.name}'s percentage is greater than portfolio percentage [${portfolioPercentage}]`,
+      };
     }
 
-    return `account ${account?.name}'s percentage is smaller than portfolio percentage [${portfolioPercentage}]`;
+    return {
+      alertUser: false,
+      message: `account ${account?.name}'s percentage is smaller than portfolio percentage [${portfolioPercentage}]`,
+    }
   }
 
-  public async sumOfTagSurpassedPortPerc(tag: string, portfolioId: string, portfolioPercentage: number): Promise<string> {
+  public async sumOfTagSurpassedPortPerc(tag: string, portfolioId: string, portfolioPercentage: number): Promise<NotificationResponse> {
     const portfolio = portfolios.find(p => p.id === portfolioId);
     const tagAccounts = portfolio?.accounts.filter(account => account.tags.includes(tag));
     const portfolioTotal = portfolio?.accounts.reduce(
@@ -281,10 +336,16 @@ class Rules {
     const tagSum = tagAccounts?.reduce((sum, account) => sum + account.quantity * account.asset.convertedPrice, 0) as number;
     const tagPercentage = (tagSum / portfolioTotal) * 100;
     if (tagPercentage > portfolioPercentage) {
-      return `Tag ${tag}'s percentage is greater than portfolio percentage [${portfolioPercentage}]`;
+      return {
+        alertUser: true,
+        message: `Tag ${tag}'s percentage is greater than portfolio percentage [${portfolioPercentage}]`,
+      };
     }
 
-    return `Tag ${tag}'s percentage is smaller than portfolio percentage [${portfolioPercentage}]`;
+    return {
+      alertUser: false,
+      message: `Tag ${tag}'s percentage is smaller than portfolio percentage [${portfolioPercentage}]`,
+    };
   }
 }
 
