@@ -15,6 +15,16 @@ interface NotificationResponse {
   message: string;
 }
 
+interface TriggerInput {
+  portfolioId?: string;
+  accountId?: string;
+  assetId?: string;
+  trigger: string;
+  condition: string;
+  thresholdType: string;
+  thresholdValue: number;
+}
+
 const portfolios = [
   {
     id: 'f7dba960-c11a-11ea-883c-d912cc75c7e9',
@@ -132,8 +142,9 @@ class Rules {
   /**
    * name
    */
-  public async accountSurpassedThresholdLib(account: Account, threshold: number): Promise<NotificationResponse> {
+  public async accountSurpassedThresholdLib(triggerInput: TriggerInput): Promise<NotificationResponse> {
     const engine = new Engine();
+    const portfolio = portfolios.find(p => p.id === triggerInput.portfolioId);
 
     // define a rule for detecting the account has exceeded threshold.
     engine.addRule({
@@ -144,7 +155,7 @@ class Rules {
               {
                 fact: 'value',
                 operator: 'greaterThanInclusive',
-                value: threshold,
+                value: triggerInput.thresholdValue,
               },
             ],
           },
@@ -159,12 +170,12 @@ class Rules {
       },
     });
 
-    const results = await engine.run(account);
+    const results = await engine.run(portfolio);
     const messages = results.events.map(event => {
       return event?.params?.message;
     });
 
-    if(messages[0]) {
+    if (messages[0]) {
       return {
         alertUser: true,
         message: messages[0],
@@ -177,12 +188,16 @@ class Rules {
     };
   }
 
-  public async accountSurpassedThreshold(account: Account, threshold: number): Promise<NotificationResponse> {
-    if (account.value > threshold) {
+  public async accountSurpassedThreshold(triggerInput: TriggerInput): Promise<NotificationResponse> {
+    const portfolio = portfolios.find(p => p.id === triggerInput.portfolioId);
+    const account = portfolio?.accounts.find(account => account.id === triggerInput.accountId);
+    const accountValue = (account?.quantity as number) * (account?.asset?.convertedPrice as number);
+
+    if (accountValue > triggerInput.thresholdValue) {
       return {
         alertUser: true,
         message: 'Threshold reached!',
-      }
+      };
     }
     return {
       alertUser: false,
@@ -190,8 +205,9 @@ class Rules {
     };
   }
 
-  public async assetSurpassedThresholdLib(asset: Asset, threshold: number): Promise<NotificationResponse> {
+  public async assetSurpassedThresholdLib(triggerInput: TriggerInput): Promise<NotificationResponse> {
     const engine = new Engine();
+    const portfolio = portfolios.find(p => p.id === triggerInput.portfolioId);
 
     // define a rule for detecting the account has exceeded threshold.
     engine.addRule({
@@ -200,9 +216,9 @@ class Rules {
           {
             all: [
               {
-                fact: 'price',
+                fact: 'convertedPrice',
                 operator: 'greaterThanInclusive',
-                value: threshold,
+                value: triggerInput.thresholdValue,
               },
             ],
           },
@@ -217,7 +233,7 @@ class Rules {
       },
     });
 
-    const results = await engine.run(asset);
+    const results = await engine.run(portfolio);
     const messages = results.events.map(event => {
       return event?.params?.message;
     });
@@ -234,77 +250,89 @@ class Rules {
     };
   }
 
-  public async assetSurpassedThreshold(asset: Asset, threshold: number): Promise<NotificationResponse> {
-    if (asset.price > threshold) {
+  public async assetSurpassedThreshold(triggerInput: TriggerInput): Promise<NotificationResponse> {
+    const portfolio = portfolios.find(p => p.id === triggerInput.portfolioId);
+    const assetAccount = portfolio?.accounts.find(account => account.asset.id === triggerInput.assetId);
+    if ((assetAccount?.asset?.convertedPrice as number) > triggerInput.thresholdValue) {
       return {
         alertUser: true,
         message: 'Threshold reached!',
-      }
-    }
-
-    return {
-        alertUser: true,
-        message: 'Threshold not reached!',
-      };
-  }
-
-  public async compareAccountsLib(account1: Account, account2: Account): Promise<NotificationResponse> {
-    const engine = new Engine();
-
-    engine.addRule({
-      conditions: {
-        any: [
-          {
-            all: [
-              {
-                fact: 'value',
-                operator: 'greaterThanInclusive',
-                value: account2.value,
-              },
-              // {
-              //   fact: 'personalFoulCount',
-              //   operator: 'greaterThanInclusive',
-              //   value: 5,
-              // },
-            ],
-          },
-        ],
-      },
-      event: {
-        // define the event to fire when the conditions evaluate truthy
-        type: 'thresholdReached',
-        params: {
-          message: `account ${account1.name} is greater than ${account2.name}`,
-        },
-      },
-    });
-
-    const results = await engine.run(account1);
-    const messages = results.events.map(event => {
-      return event?.params?.message;
-    });
-
-    if(messages[0]){
-      return {
-        alertUser: true,
-        message: messages[0],
       };
     }
 
     return {
-      alertUser: false,
-      message: `account ${account1.name} is less than ${account2.name}`
-    }
+      alertUser: true,
+      message: 'Threshold not reached!',
+    };
   }
 
-  public async compareAccounts(account1: Account, account2: Account): Promise<string> {
-    if (account1.value > account2.value) {
-      return `account ${account1.name} is greater than ${account2.name}`;
+  // public async compareAccountsLib(triggerInput: TriggerInput): Promise<NotificationResponse> {
+  //   const engine = new Engine();
+  //   const portfolio = portfolios.find(p => p.id === triggerInput.portfolioId);
+  //   const account = portfolio?.accounts.find(account => account.id === triggerInput.accountId);
+  //   const accountValue = (account?.quantity as number) * (account?.asset?.convertedPrice as number);
+
+  //   engine.addRule({
+  //     conditions: {
+  //       any: [
+  //         {
+  //           all: [
+  //             {
+  //               fact: 'value',
+  //               operator: 'greaterThanInclusive',
+  //               value: account2.value,
+  //             },
+  //             // {
+  //             //   fact: 'personalFoulCount',
+  //             //   operator: 'greaterThanInclusive',
+  //             //   value: 5,
+  //             // },
+  //           ],
+  //         },
+  //       ],
+  //     },
+  //     event: {
+  //       // define the event to fire when the conditions evaluate truthy
+  //       type: 'thresholdReached',
+  //       params: {
+  //         message: `account ${account1.name} is greater than ${account2.name}`,
+  //       },
+  //     },
+  //   });
+
+  //   const results = await engine.run(account1);
+  //   const messages = results.events.map(event => {
+  //     return event?.params?.message;
+  //   });
+
+  //   if (messages[0]) {
+  //     return {
+  //       alertUser: true,
+  //       message: messages[0],
+  //     };
+  //   }
+
+  //   return {
+  //     alertUser: false,
+  //     message: `account ${account1.name} is less than ${account2.name}`,
+  //   };
+  // }
+
+  public async compareAccounts(triggerInput: TriggerInput): Promise<string> {
+    const portfolio = portfolios.find(p => p.id === triggerInput.portfolioId);
+    const account = portfolio?.accounts.find(account => account.id === triggerInput.accountId);
+    const accountValue = (account?.quantity as number) * (account?.asset?.convertedPrice as number);
+    if (accountValue > triggerInput.thresholdValue) {
+      return `account ${account?.name} is greater than account2[${triggerInput.thresholdValue}]`;
     }
-    return `account ${account1.name} is less than ${account2.name}`;
+    return `account ${account?.name} is less than account2[${triggerInput.thresholdValue}]`;
   }
 
-  public async accountSurpassedPortPerc(accountId: string, portfolioId: string, portfolioPercentage: number): Promise<NotificationResponse> {
+  public async accountSurpassedPortPerc(
+    accountId: string,
+    portfolioId: string,
+    portfolioPercentage: number,
+  ): Promise<NotificationResponse> {
     const portfolio = portfolios.find(p => p.id === portfolioId);
     const account = portfolio?.accounts.find(account => account.id === accountId);
     const portfolioTotal = portfolio?.accounts.reduce(
@@ -323,7 +351,7 @@ class Rules {
     return {
       alertUser: false,
       message: `account ${account?.name}'s percentage is smaller than portfolio percentage [${portfolioPercentage}]`,
-    }
+    };
   }
 
   public async sumOfTagSurpassedPortPerc(tag: string, portfolioId: string, portfolioPercentage: number): Promise<NotificationResponse> {
