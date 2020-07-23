@@ -97,6 +97,7 @@ describe('Engine Tests', (): void => {
       expect(singleEvent.params.message).toBe('Triggered');
     }
   });
+
   it('3: Check all items in array value > threshold', async (): Promise<void> => {
     // Check all portfolios against their thresholds.
     // { portfolios: [ { id: 1, value: 100, threshold: 50}, { id: 2, value: 100, threshold: 50}, { id: 2, value: 100, threshold: 5000} ]}
