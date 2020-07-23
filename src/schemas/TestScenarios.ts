@@ -13,12 +13,31 @@ const testScenarios = [
       { value: 100, threshold: 5000 },
     ],
   },
-  // 4: Filter Check matching item (id=1) in array value > threshold
+  // 4: Array Filter matching (id=1) value > threshold
   {
     portfolios: [
       { id: 1, value: 100, threshold: 50 },
       { id: 2, value: 100, threshold: 50 },
       { id: 3, value: 100, threshold: 50 },
+    ],
+  },
+  // 5: Array-in-Array with filters
+  {
+    portfolios: [
+      {
+        id: 1,
+        accounts: [
+          { id: 1, value: 100, threshold: 50 },
+          { id: 2, value: 100, threshold: 500 },
+        ],
+      },
+      {
+        id: 2,
+        accounts: [
+          { id: 21, value: 100, threshold: 50 },
+          { id: 22, value: 100, threshold: 500 },
+        ],
+      },
     ],
   },
 ];
