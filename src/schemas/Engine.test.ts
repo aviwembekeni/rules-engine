@@ -103,7 +103,7 @@ describe('Engine Tests', (): void => {
     expect('This to be implemented').toBe('');
   });
 
-  it('Should deal with arrays', async (): Promise<void> => {
+  it('4: Filter Check matching items in array value > threshold', async (): Promise<void> => {
     // Check portfolio id 1 against its threshold. Ignore portfolio 2
     // { portfolios: [ { id: 1, value: 100, threshold: 50}, { id: 2, value: 100, threshold: 50} ]}
     expect('This to be implemented').toBe('');

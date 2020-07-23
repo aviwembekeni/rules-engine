@@ -30,4 +30,15 @@ describe('JsonLogic Tests', (): void => {
     const result = jsonLogic.apply(rule, data);
     expect(result).toStrictEqual([true, true, false]);
   });
+  it('4: Filter Check matching item (id=1) in array value > threshold', async (): Promise<void> => {
+    // I can't find a way to achieve this in a single rule. A workaround is to manually chain filters into maps, but it feels yucky
+    const data = testScenarios[4];
+    const filterRule = { filter: [{ var: 'portfolios' }, { '==': [{ var: 'id' }, 1] }] };
+    const filterResult = jsonLogic.apply(filterRule, data);
+    console.log(filterResult);
+    const rule = { map: [{ var: '' }, { '>': [{ var: 'value' }, { var: 'threshold' }] }] };
+
+    const result = jsonLogic.apply(rule, filterResult);
+    expect(result).toStrictEqual([true]);
+  });
 });
