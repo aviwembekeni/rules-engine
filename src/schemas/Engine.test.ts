@@ -77,7 +77,7 @@ describe('Engine Tests', (): void => {
                 fact: 'portfolio',
                 operator: 'greaterThanInclusive',
                 path: '$.value',
-                value: { fact: 'portfolio', operator: 'greaterThanInclusive', path: '$.threshold' },
+                value: { fact: 'portfolio', path: '$.threshold' },
               },
             ],
           },

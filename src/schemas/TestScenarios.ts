@@ -13,6 +13,5 @@ const testScenarios = [
       { value: 100, threshold: 5000 },
     ],
   },
-  { id: 1, name: 'Account1', value: 100 },
 ];
 export default testScenarios;
