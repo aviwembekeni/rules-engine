@@ -9,7 +9,7 @@ import ContextOptions from './models/ContextOptions.model';
 
 const apolloServer = new ApolloServer({
   typeDefs,
-  resolvers: resolvers as any,
+  resolvers,
   tracing: true,
   formatError: (error): ApolloError => {
     if (error.extensions) delete error.extensions.exception;

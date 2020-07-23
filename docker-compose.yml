@@ -1,6 +1,6 @@
 version: '3.5'
 services:
-  notifications-service:
+  rules-engine:
     container_name: ${PROJECT}
     build:
       context: ./

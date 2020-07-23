@@ -266,12 +266,12 @@ const resolvers = {
       });
       return messages[0] || 'No Alert';
     },
-    async tagPerfomance(_obj: {}, args: { portfolioId: string; tag: string }): Promise<string> {
+    async tagPerfomance(_obj: unknown, args: { portfolioId: string; tag: string }): Promise<string> {
       const { portfolioId, tag } = args;
 
       const portfolio = portfolios.find(p => p.id === portfolioId);
       console.log(portfolioId, tag);
-      const tagAlert = alerts.find(alert => (alert.portfolioId === portfolioId) && (alert.tag === tag)) as Alert;
+      const tagAlert = alerts.find(alert => alert.portfolioId === portfolioId && alert.tag === tag) as Alert;
       console.log('tagAlert: ', tagAlert);
 
       const start = new Date().getMinutes();
@@ -280,13 +280,17 @@ const resolvers = {
       console.log(start);
       console.log(oldDate);
 
-
       if (oldDate - start > 2) {
-        const portfolioTotal = portfolio?.accounts.reduce((sum, currentAccount) => sum + (currentAccount.quantity * currentAccount.asset.convertedPrice), 0) as number;
+        const portfolioTotal = portfolio?.accounts.reduce(
+          (sum, currentAccount) => sum + currentAccount.quantity * currentAccount.asset.convertedPrice,
+          0,
+        ) as number;
         const tagAccounts = portfolio?.accounts.filter(account => account.tags.includes(tag));
-        const tagSum = tagAccounts?.reduce((sum, account) => sum + (account.quantity * account.asset.convertedPrice), 0) as number;
-        const tagPercentage = (tagSum / portfolioTotal * 100);
-        return `Over the past week your tag went from ${tagAlert.lastTagPercentage}% to ${tagPercentage}%, the difference is ${tagPercentage - tagAlert.lastTagPercentage}%`;
+        const tagSum = tagAccounts?.reduce((sum, account) => sum + account.quantity * account.asset.convertedPrice, 0) as number;
+        const tagPercentage = (tagSum / portfolioTotal) * 100;
+        return `Over the past week your tag went from ${tagAlert.lastTagPercentage}% to ${tagPercentage}%, the difference is ${
+          tagPercentage - tagAlert.lastTagPercentage
+        }%`;
       }
       return 'Time hasnt passed';
     },

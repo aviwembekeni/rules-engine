@@ -127,8 +127,6 @@ const portfolios = [
 ];
 
 class Rules {
-  constructor() {}
-
   /**
    * name
    */
@@ -164,7 +162,7 @@ class Rules {
       return event?.params?.message;
     });
 
-    if(messages[0]) {
+    if (messages[0]) {
       return {
         alertUser: true,
         message: messages[0],
@@ -182,7 +180,7 @@ class Rules {
       return {
         alertUser: true,
         message: 'Threshold reached!',
-      }
+      };
     }
     return {
       alertUser: false,
@@ -239,13 +237,13 @@ class Rules {
       return {
         alertUser: true,
         message: 'Threshold reached!',
-      }
+      };
     }
 
     return {
-        alertUser: true,
-        message: 'Threshold not reached!',
-      };
+      alertUser: true,
+      message: 'Threshold not reached!',
+    };
   }
 
   public async compareAccountsLib(account1: Account, account2: Account): Promise<NotificationResponse> {
@@ -284,7 +282,7 @@ class Rules {
       return event?.params?.message;
     });
 
-    if(messages[0]){
+    if (messages[0]) {
       return {
         alertUser: true,
         message: messages[0],
@@ -293,8 +291,8 @@ class Rules {
 
     return {
       alertUser: false,
-      message: `account ${account1.name} is less than ${account2.name}`
-    }
+      message: `account ${account1.name} is less than ${account2.name}`,
+    };
   }
 
   public async compareAccounts(account1: Account, account2: Account): Promise<string> {
@@ -304,7 +302,11 @@ class Rules {
     return `account ${account1.name} is less than ${account2.name}`;
   }
 
-  public async accountSurpassedPortPerc(accountId: string, portfolioId: string, portfolioPercentage: number): Promise<NotificationResponse> {
+  public async accountSurpassedPortPerc(
+    accountId: string,
+    portfolioId: string,
+    portfolioPercentage: number,
+  ): Promise<NotificationResponse> {
     const portfolio = portfolios.find(p => p.id === portfolioId);
     const account = portfolio?.accounts.find(account => account.id === accountId);
     const portfolioTotal = portfolio?.accounts.reduce(
@@ -323,7 +325,7 @@ class Rules {
     return {
       alertUser: false,
       message: `account ${account?.name}'s percentage is smaller than portfolio percentage [${portfolioPercentage}]`,
-    }
+    };
   }
 
   public async sumOfTagSurpassedPortPerc(tag: string, portfolioId: string, portfolioPercentage: number): Promise<NotificationResponse> {
