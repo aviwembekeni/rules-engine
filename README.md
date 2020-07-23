@@ -1,6 +1,6 @@
-# Inves Technology | Notifications
+# Inves Technology | rules-engine
 
-Lettuce Notifications service using the Inves Architecture
+Lettuce Rules Engine service using the Inves Architecture
 
 ## Usage
 
