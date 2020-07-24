@@ -62,7 +62,7 @@ describe('JsonLogic Tests', (): void => {
           map: [
             // Filter for specific account id.
             {
-              filter: [{ var: 'accounts' }, { '==': [{ var: 'id' }, 1] }],
+              filter: [{ var: 'accounts' }, { '==': [{ var: 'id' }, 11] }],
             },
             // and map account(s) to true/false by evaluating rule.
             { '>': [{ var: 'value' }, { var: 'threshold' }] },
@@ -72,5 +72,55 @@ describe('JsonLogic Tests', (): void => {
     };
     const result = jsonLogic.apply(rule, data);
     expect(result).toStrictEqual([[true]]);
+  });
+
+  it('6: Compare two account values', async (): Promise<void> => {
+    const data = testScenarios[6];
+    const accountOneValue = {
+      reduce: [
+        {
+          reduce: [
+            {
+              map: [
+                {
+                  filter: [{ var: 'portfolios' }, { '==': [{ var: 'id' }, 1] }],
+                },
+                {
+                  filter: [{ var: 'accounts' }, { '==': [{ var: 'id' }, 11] }],
+                },
+              ],
+            },
+            { var: 'current' },
+          ],
+        },
+        { var: 'current.value' },
+      ],
+    };
+    const accountTwoValue = {
+      reduce: [
+        {
+          reduce: [
+            {
+              map: [
+                {
+                  filter: [{ var: 'portfolios' }, { '==': [{ var: 'id' }, 1] }],
+                },
+                {
+                  filter: [{ var: 'accounts' }, { '==': [{ var: 'id' }, 22] }],
+                },
+              ],
+            },
+            { var: 'current' },
+          ],
+        },
+        { var: 'current.value' },
+      ],
+    };
+    const oneLargerThanTwoRule = {
+      '>': [accountOneValue, accountTwoValue],
+    };
+
+    const result = jsonLogic.apply(oneLargerThanTwoRule, data);
+    expect(result).toStrictEqual(true);
   });
 });
