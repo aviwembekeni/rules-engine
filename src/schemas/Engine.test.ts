@@ -97,13 +97,14 @@ describe('Engine Tests', (): void => {
       expect(singleEvent.params.message).toBe('Triggered');
     }
   });
+
   it('3: Check all items in array value > threshold', async (): Promise<void> => {
     // Check all portfolios against their thresholds.
     // { portfolios: [ { id: 1, value: 100, threshold: 50}, { id: 2, value: 100, threshold: 50}, { id: 2, value: 100, threshold: 5000} ]}
     expect('This to be implemented').toBe('');
   });
 
-  it('Should deal with arrays', async (): Promise<void> => {
+  it('4: Array Filter matching (id=1) value > threshold', async (): Promise<void> => {
     // Check portfolio id 1 against its threshold. Ignore portfolio 2
     // { portfolios: [ { id: 1, value: 100, threshold: 50}, { id: 2, value: 100, threshold: 50} ]}
     expect('This to be implemented').toBe('');
