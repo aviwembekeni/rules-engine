@@ -118,5 +118,25 @@ const testScenarios = [
       },
     ],
   },
+  // 10. Summing of portfolio accounts by tag
+  {
+    portfolios: [
+      {
+        id: 1,
+        accounts: [
+          { id: 11, value: 70, tags: ['crypto'] },
+          { id: 22, value: 50, tags: ['etfs'] },
+          { id: 44, value: 100, tags: ['crypto'] },
+        ],
+      },
+      {
+        id: 2,
+        accounts: [
+          { id: 33, value: 50 },
+          { id: 44, value: 500 },
+        ],
+      },
+    ],
+  },
 ];
 export default testScenarios;
