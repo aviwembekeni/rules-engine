@@ -144,7 +144,7 @@ describe('JsonLogic Tests', (): void => {
 
 
   it('Account value is larger than a percentage (25% in this example) of portfolio total', async (): Promise<void> => {
-    const data = testScenarios[7];
+    const data = testScenarios[8];
     const rule = {
       '>': [
         {
@@ -187,5 +187,33 @@ describe('JsonLogic Tests', (): void => {
 
     const result = jsonLogic.apply(rule, data);
     expect(result).toStrictEqual(true);
+  });
+
+  it('Summing of portfolio accounts by tag', async (): Promise<void> => {
+    const data = testScenarios[9];
+    const rule = {
+      reduce: [
+        {
+          reduce: [
+            {
+              map: [
+                {
+                  filter: [{ var: 'portfolios' }, { '==': [{ var: 'id' }, 1] }],
+                },
+                {
+                  filter: [{ var: 'accounts' }, { in: ['crypto', { var: 'tags' }] }],
+                },
+              ],
+            },
+            { var: 'current' },
+          ],
+        },
+        { '+': [{ var: 'current.value' }, { var: 'accumulator' }] },
+        0,
+      ],
+    };
+
+    const result = jsonLogic.apply(rule, data);
+    expect(result).toStrictEqual(1400);
   });
 });
