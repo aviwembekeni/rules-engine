@@ -123,4 +123,23 @@ describe('JsonLogic Tests', (): void => {
     const result = jsonLogic.apply(oneLargerThanTwoRule, data);
     expect(result).toStrictEqual(true);
   });
+
+  it('Portfolio accounts sum',  async (): Promise<void> => {
+    const data = testScenarios[7];
+    const rule = {
+      reduce: [
+        {
+          map: [
+            { filter: [{ var: 'portfolios' }, { '==': [{ var: 'id' }, 1] }] },
+            { reduce: [{ var: 'accounts' }, { '+': [{ var: 'current.value' }, { var: 'accumulator' }] }, 0] },
+          ],
+        },
+        { var: 'current' },
+      ],
+    };
+
+    const result = jsonLogic.apply(rule, data);
+    expect(result).toStrictEqual(550);
+
+  });
 });

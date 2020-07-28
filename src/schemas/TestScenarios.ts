@@ -59,5 +59,24 @@ const testScenarios = [
       },
     ],
   },
+  // 7. Summing of portfolio accounts
+  {
+    portfolios: [
+      {
+        id: 1,
+        accounts: [
+          { id: 11, value: 500 },
+          { id: 22, value: 50 },
+        ],
+      },
+      {
+        id: 2,
+        accounts: [
+          { id: 33, value: 50 },
+          { id: 44, value: 500 },
+        ],
+      },
+    ],
+  },
 ];
 export default testScenarios;
