@@ -59,7 +59,7 @@ const testScenarios = [
       },
     ],
   },
-  // 7. Summing of portfolio accounts
+  // 7. Portfolio accounts sum
   {
     portfolios: [
       {
@@ -67,6 +67,26 @@ const testScenarios = [
         accounts: [
           { id: 11, value: 500 },
           { id: 22, value: 50 },
+        ],
+      },
+      {
+        id: 2,
+        accounts: [
+          { id: 33, value: 50 },
+          { id: 44, value: 500 },
+        ],
+      },
+    ],
+  },
+  // 8. Account value is larger than a percentage (25% in this example) of portfolio total
+  {
+    portfolios: [
+      {
+        id: 1,
+        accounts: [
+          { id: 11, value: 3 },
+          { id: 22, value: 50 },
+          { id: 44, value: 900 },
         ],
       },
       {
